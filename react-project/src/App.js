@@ -1,54 +1,12 @@
-import axios from 'axios';
+
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
+import Main from './pages/Main';
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import Test from './pages/Test';
 
-function Home () {
-
-  return(
-    <>
-      <Header></Header>
-      <div>홈입니다.</div>
-    </>
-  )
-
-} 
-
-function Test () {
-
-  const [data, setData]= useState();
-  
-  useEffect(() => {
-    axios.get('/test')
-      .then(response => {
-        setData(response.data);
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, []);
-  return(
-    <>
-      <div>
-        <h3>테스트</h3>
-      </div>
-      {
-        data?.map(element => {
-          return(
-            <div style={{padding:"20px 100px", textAlign:"left"}}>
-              <div>번호: {element._id}</div>
-              <div>제목: {element.이름}</div>
-              <div>날짜: {element.날짜}</div>
-            </div>
-          )
-        })
-      }
-    </>
-  )
-
-} 
 
 function App() {
 
@@ -56,7 +14,9 @@ function App() {
     <BrowserRouter>
         <div className="App">
           <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<Main/>} />
+            <Route path="/signin" element={<SignUp/>} />
+            <Route path="/login" element={<Login/>} />
             <Route path="/test" element={<Test/>} />
           </Routes>
         </div>
