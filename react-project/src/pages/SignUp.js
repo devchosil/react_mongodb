@@ -1,6 +1,7 @@
 
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
 
 const Container = styled.section`
@@ -14,46 +15,77 @@ const Container = styled.section`
 const InputWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 200px;
+    width: 220px;
     padding-bottom: 10px;
 `;
 
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: space-around;
-    width: 200px;
+    width: 220px;
     padding-top: 10px;
 `;
 function SignUp () {
     const navigate = useNavigate();
 
+    const [formData,setFormData] = useState({
+        id: '', password:'', nickname:''
+    })
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({...formData, [name]: value})
+    }
+
+    const handleSubmit = async () => {
+        try {
+            await axios.post('/signup', formData)
+            alert('성공');
+        } catch (error) {
+            alert('회원가입 실패');
+        }
+    }
+
     return(
         <Container>
-            <InputWrapper>
-                <span>ID</span>
-                <form action='/signup' method='POST'>
+            <form>
+                <InputWrapper>
+                    <label htmlFor='id'>ID</label>
                     <input
                         type='text'
+                        name='id'
+                        value={formData.id}
+                        onChange={handleChange}
                         placeholder="ID를 입력하세요"
+                        required
                     />
-                </form> 
-            </InputWrapper>
-            <InputWrapper>
-                <span>PW</span>
-                <form>
+                </InputWrapper>
+                <InputWrapper>
+                    <label htmlFor='password'>PW</label>
                     <input
+                        name='password'
+                        value={formData.password}
+                        onChange={handleChange}
                         placeholder="비밀번호를 입력하세요"
                     />
-                </form> 
-            </InputWrapper>
-            <ButtonWrapper>
-                {/* <button style={{width:"90px"}}>로그인</button> */}
-                <button 
-                    style={{width:"100%"}}
-                    onClick={()=>navigate('/signin')}
-                >회원가입</button>
-            </ButtonWrapper>
-                
+                </InputWrapper>
+                <InputWrapper>
+                    <label htmlFor='nickname'>별명</label>
+                    <input
+                        name='nickname'
+                        value={formData.nickname}
+                        onChange={handleChange}
+                        placeholder="별명을 입력하세요"
+                    />
+                </InputWrapper>
+                <ButtonWrapper>
+                    <button
+                        type="submit"
+                        style={{width:"100%"}}
+                        onClick={handleSubmit}
+                    >회원가입</button>
+                </ButtonWrapper>
+            </form>
         </Container>
   )
 

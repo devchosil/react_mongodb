@@ -52,7 +52,7 @@ function Login () {
             <button style={{width:"90px"}}>로그인</button>
             <button 
                 style={{width:"90px"}}
-                onClick={()=>navigate('/signin')}
+                onClick={()=>navigate('/signup')}
             >회원가입</button>
         </ButtonWrapper>
             

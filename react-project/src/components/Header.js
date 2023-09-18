@@ -61,8 +61,8 @@ function Header () {
         <HeartIcon />
         <Menu>
           <div onClick={()=>{navigate('/test')}}>테스트</div>
-          <div onClick={()=>{navigate('/signin')}}>회원가입</div>
-          <div>메뉴3</div>
+          <div onClick={()=>{navigate('/signup')}}>회원가입</div>
+          <div onClick={()=>{navigate('/login')}}>로그인</div>
         </Menu>
    </HeaderContainer>
   )

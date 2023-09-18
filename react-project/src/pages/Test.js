@@ -27,9 +27,9 @@ function Test () {
           data?.map(element => {
             return(
               <div style={{padding:"20px 100px", textAlign:"left"}}>
-                <div>번호: {element._id}</div>
-                <div>제목: {element.이름}</div>
-                <div>날짜: {element.날짜}</div>
+                <div>아이디: {element.id}</div>
+                <div>비밀번호: {element.password}</div>
+                <div>닉네임: {element.nickname}</div>
               </div>
             )
           })
