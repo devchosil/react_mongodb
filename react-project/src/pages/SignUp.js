@@ -38,11 +38,19 @@ function SignUp () {
     }
 
     const handleSubmit = async () => {
-        try {
-            await axios.post('/signup', formData)
-            alert('성공');
-        } catch (error) {
-            alert('회원가입 실패');
+        const regExp = /[a-z]+[a-z0-9]{5,19}$/g;
+
+        if(formData.id===''||formData.password===''||formData.nickname==='') {
+            alert('빈칸을 모두 채워주세요')
+        } else if(!regExp.test(formData.id)) {
+            alert('아이디를 형식에 맞게 작성해주세요')
+        }else {
+            try {
+                await axios.post('/signup', formData)
+                alert('성공');
+            } catch (error) {
+                alert('회원가입 실패');
+            }
         }
     }
 

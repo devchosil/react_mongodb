@@ -2,7 +2,7 @@ import '../App.css';
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import axios from 'axios';
 
 const Container = styled.section`
     display: flex;
@@ -28,15 +28,40 @@ const ButtonWrapper = styled.div`
 
 function Login () {
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  return(
+    const [inputData,setInputData] = useState({
+        id:'',
+        password:''
+    });
+
+    const onChangeData = (e) => {
+        const { name, value } = e.target;
+        setInputData({...inputData, [name]: value});
+    }
+
+    const onLogin = async () => {    
+        await axios.post('/login', inputData)
+            .then(response => {
+                alert('로그인에 성공했습니다.');
+                // Redirect to the home page after successful login
+                navigate('/');
+            })
+                .catch(error => {
+                alert('로그인에 실패했습니다.');
+        });
+    }
+
+    return(
     <Container>
         <InputWrapper>
             <span>ID</span>
             <form>
                 <input
+                    name='id'
                     placeholder="ID를 입력하세요"
+                    value={inputData.id}
+                    onChange={onChangeData}
                 />
             </form> 
         </InputWrapper>
@@ -44,18 +69,23 @@ function Login () {
             <span>PW</span>
             <form>
                 <input
+                    name='password'
                     placeholder="비밀번호를 입력하세요"
+                    value={inputData.password}
+                    onChange={onChangeData}
                 />
             </form> 
         </InputWrapper>
         <ButtonWrapper>
-            <button style={{width:"90px"}}>로그인</button>
+            <button 
+                style={{width:"90px"}}
+                onClick={onLogin}
+            >로그인</button>
             <button 
                 style={{width:"90px"}}
                 onClick={()=>navigate('/signup')}
             >회원가입</button>
-        </ButtonWrapper>
-            
+        </ButtonWrapper>    
     </Container>
   )
 
