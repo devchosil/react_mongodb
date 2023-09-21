@@ -5,8 +5,7 @@ const path = require('path');
 const app = express();
 const passport = require('passport');
 const session = require('express-session');
-
-
+const { isAuthenticated } = require('passport');
 
 //body-parser 사용하기 위해 아래 코드 추가
 //body-parser라이브러리는 input에 넣은 내용을 해석할 수 있게?
@@ -22,7 +21,6 @@ app.use(express.static(path.join(__dirname, 'react-project/build')));
 app.use(express.json());   
 
 //passport 라이브러리 설치 사용
-
 const LocalStrategy = require('passport-local').Strategy;
 app.use(session({
     secret: '비밀코드',
@@ -60,11 +58,6 @@ MongoClient.connect(
     }
 )
 
-//     app.listen(8080, function(){  
-//         console.log("listening on 8080")
-//     }
-//     )
-
 // 아이디, 비번을 인증해주는 코드. 복붙하고 수정해서 쓰기
 passport.use(new LocalStrategy({
     usernameField: 'id',
@@ -101,8 +94,8 @@ db.collection('user').findOne({id: 아이디}, function(에러, 결과) {
 });
 
 // 로그인 여부 체크
-const isLogin = (req, res,next) => {
-    if(req.user) {
+function isLogin(req, res,next) {
+    if(req.isAuthenticated()) {
         next()
     } else {
         res.send('로그인 하세요');
@@ -113,21 +106,108 @@ app.get('/', function(요청,응답){
     응답.sendFile(path.join(__dirname, 'react-project/build/index.html'));
 })
 
-app.get('/test', (요청, 응답) => {
-    db.collection('user').find({}).toArray(function(에러,result){
-        console.log('데이터 가져오기 성공');
-        응답.json(result);
+
+// 내가한거
+// app.post('/login', passport.authenticate('local', { 
+//     failureRedirect : '/fail'
+// }),function(req,res){
+//     // 이거 여기서 안돼서 일단 client side에서 해결함 (navigate로)
+//     res.redirect('/test');
+// })
+
+// 1번째 챗지피티 해결책
+// app.post('/login', (req, res, next) => {
+//     passport.authenticate('local', (err, user, info) => {
+//         console.log(info);
+//         console.log(user);
+//         if (err) {
+//             console.error(err);
+//             return res.redirect('/login');
+//         }
+//         if (!user) {
+//             return res.redirect('/login');
+//         }
+//         req.login(user, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return res.redirect('/login');
+//             }
+//             return res.redirect('/');
+//         });
+//     })(req, res, next);
+// });
+
+// 2번째 챗지피티 해결책
+// app.post('/login', (req, res, next) => {
+//     passport.authenticate('local', (err, user, info) => {
+//         if (err) {
+//             console.error(err);
+//             // Handle the error appropriately (e.g., return an error JSON response).
+//             return res.status(500).json({ error: 'Internal server error' });
+//         }
+//         if (!user) {
+//             // Redirect to the login page in case of a failed login.
+//             return res.redirect('/login');
+//         }
+//         req.login(user, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 // Handle the error appropriately (e.g., return an error JSON response).
+//                 return res.status(500).json({ error: 'Internal server error' });
+//             }
+//             // Send a JSON response indicating a successful login.
+//             res.status(200).json({ message: 'Login successful' });
+//         });
+//     })(req, res, next);
+// });
+
+//3번쨰..
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            console.error(err);
+            // Handle the error appropriately (e.g., return an error JSON response).
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        if (!user) {
+            // Redirect to the login page in case of a failed login.
+            return res.redirect('/login');
+        }
+        req.login(user, (err) => {
+            if (err) {
+                console.error(err);
+                // Handle the error appropriately (e.g., return an error JSON response).
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            // console.log(user);
+            // Send a JSON response indicating a successful login.
+            res.status(200).json(user);
+        });
+    })(req, res, next);
+});
+
+
+app.get('/logout', (req, res) => {
+    req.logout((err) => { // Passport's logout function clears the session
+        if (err) {
+            console.error(err);
+        }
+        res.redirect('/login');
     });
+});
+
+app.get('/test', isLogin ,function(요청, 응답) {
+    console.log(요청.user)
+    응답.json(요청.user);
+    // db.collection('user').find({}).toArray(function(에러,result){
+    //     // console.log('reslut');
+    //     console.log(요청.user)
+    //     응답.json({ user: 요청.user });
+    //     // 응답.json(result);
+    // });
 })
 
-app.post('/login', passport.authenticate('local', { 
-    failureRedirect : '/fail'
-}),function(req,res){
-    // 이거 여기서 안돼서 일단 client side에서 해결함 (navigate로)
-    res.redirect('/');
-})
-
-app.post('/signup', (req, res) => {
+app.post('/signup', function(req, res) {
     db.collection('user').findOne({ id: req.body.id }, function(에러, 결과){
         // const password = 요청.body.signUpPw;
         if(!결과) {
@@ -145,7 +225,7 @@ app.post('/signup', (req, res) => {
     })
 })
 
-    //리액트 라우터 쓰는 경우, 아래 코드를 최하단에 추가해놓는게 좋음
-    app.get('*', function(요청,응답){
-        응답.sendFile(path.join(__dirname, 'react-project/build/index.html'));
-    })
+//리액트 라우터 쓰는 경우, 아래 코드를 최하단에 추가해놓는게 좋음
+app.get('*', function(요청,응답){
+    응답.sendFile(path.join(__dirname, 'react-project/build/index.html'));
+})

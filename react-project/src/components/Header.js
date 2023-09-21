@@ -2,11 +2,13 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const HeaderContainer = styled.header`
   background-color: white;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   font-size: 15px;
   padding: 1rem; /* Adjust padding as needed */
   /* font-family: NeoDunggeunmo; */
@@ -47,22 +49,48 @@ const HeartIcon = styled.div`
 `;
 
 const Menu = styled.div`
-  padding-left: 15px;
-  width: 180px;
+  /* padding-left: 15px; */
   display: flex;
-  justify-content: space-between;
+  margin-right: 5px;
+  /* justify-content: flex-start; */
 `;
+
+const Button = styled.button`
+  background-color: transparent;
+  border: none;
+  width: 80px;
+  font-size: 16px;
+  font-family: NeoDunggeunmo;
+  cursor: pointer;
+`;
+
 function Header () {
 
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get('/logout'); // Make a GET request to the /logout route
+      console.log(response);
+      navigate('/login'); // Redirect to the home page after logout
+  } catch (error) {
+      console.error(error);
+  }
+
+}
+
   return(
+
+    
    <HeaderContainer>
-        <HeartIcon />
         <Menu>
-          <div onClick={()=>{navigate('/test')}}>테스트</div>
-          <div onClick={()=>{navigate('/signup')}}>회원가입</div>
-          <div onClick={()=>{navigate('/login')}}>로그인</div>
+          {/* <HeartIcon /> */}
+          <Button onClick={()=>{navigate('/test')}}>테스트</Button>
+          <Button onClick={()=>{navigate('/signup')}}>회원가입</Button>
+          <Button onClick={()=>{navigate('/login')}}>로그인</Button>
+        </Menu>
+        <Menu>
+         <Button onClick={handleLogout}>로그아웃</Button>
         </Menu>
    </HeaderContainer>
   )

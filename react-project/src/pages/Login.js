@@ -40,16 +40,21 @@ function Login () {
         setInputData({...inputData, [name]: value});
     }
 
-    const onLogin = async () => {    
-        await axios.post('/login', inputData)
-            .then(response => {
+    const onLogin = async () => {
+        try {
+            const response = await axios.post('/login', inputData);
+            console.log(response);
+            if(typeof response.data === 'object') {
                 alert('로그인에 성공했습니다.');
-                // Redirect to the home page after successful login
-                navigate('/');
-            })
-                .catch(error => {
+                // Redirect to the '/test' page on the client side
+                navigate('/', { state: {user:response.data}});
+            } else {
                 alert('로그인에 실패했습니다.');
-        });
+            }
+        } catch (error) {
+            console.error(error);
+            alert('로그인에 실패했습니다.');
+        }
     }
 
     return(
