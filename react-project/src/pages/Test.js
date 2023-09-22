@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
 
-function Test () {
+function Test ({ isLogout, isLoggedIn }) {
   const [data, setData]= useState();
   
   useEffect(() => {
@@ -19,7 +19,7 @@ function Test () {
 
   return(
     <>
-      <Header></Header>
+      <Header isLogout={isLogout} isLoggedIn={isLoggedIn}/>
       <div>
         <h3>테스트</h3>
         <div></div>

@@ -64,7 +64,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-function Header () {
+function Header ({ isLogout, isLoggedIn }) {
 
   const navigate = useNavigate();
 
@@ -72,6 +72,7 @@ function Header () {
     try {
       const response = await axios.get('/logout'); // Make a GET request to the /logout route
       console.log(response);
+      isLogout();
       navigate('/login'); // Redirect to the home page after logout
   } catch (error) {
       console.error(error);
@@ -80,8 +81,6 @@ function Header () {
 }
 
   return(
-
-    
    <HeaderContainer>
         <Menu>
           {/* <HeartIcon /> */}
@@ -89,9 +88,12 @@ function Header () {
           <Button onClick={()=>{navigate('/signup')}}>회원가입</Button>
           <Button onClick={()=>{navigate('/login')}}>로그인</Button>
         </Menu>
-        <Menu>
-         <Button onClick={handleLogout}>로그아웃</Button>
-        </Menu>
+        {/* 근데 로그인안하면 페이지 접속을 못하니까 상관이 없을까 */}
+        { isLoggedIn 
+          && <Menu>
+              <Button onClick={handleLogout}>로그아웃</Button>
+            </Menu>
+        }
    </HeaderContainer>
   )
 

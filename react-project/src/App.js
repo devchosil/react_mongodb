@@ -7,34 +7,22 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import Test from './pages/Test';
 
-
 function App() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const isLogin = () =>  setIsLoggedIn(true);
+  const isLogout = () => setIsLoggedIn(false);
+
   return (
     <BrowserRouter>
         <div className="App">
           <Routes>
-            {/* <Route
+            <Route
               path="/"
-              element={
-                isLoggedIn ? (
-                  <Outlet />
-                ) : (
-                  // Redirect to /login if not logged in
-                  <Navigate to="/login" replace />
-                )
-              }
-            >
-              <Route index element={<Main />} />
-            </Route> */}
-          <Route
-            path="/"
-            element={isLoggedIn ? <Main /> : <Navigate to="/login" replace />}
-          />
+              element={isLoggedIn ? <Main isLogout={isLogout} isLoggedIn={isLoggedIn}/> : <Navigate to="/login" replace />} />
             <Route path="/signup" element={<SignUp/>} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/test" element={<Test/>} />
+            <Route path="/login" element={<Login isLogin={isLogin}/>} />
+            <Route path="/test" element={<Test isLogout={isLogout} isLoggedIn={isLoggedIn}/>} />
           </Routes>
         </div>
     </BrowserRouter>

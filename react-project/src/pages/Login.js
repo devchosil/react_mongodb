@@ -26,7 +26,7 @@ const ButtonWrapper = styled.div`
     padding-top: 10px;
 `;
 
-function Login () {
+function Login ({ isLogin }) {
 
     const navigate = useNavigate();
 
@@ -40,11 +40,13 @@ function Login () {
         setInputData({...inputData, [name]: value});
     }
 
-    const onLogin = async () => {
+    const handleLogin = async () => {
         try {
             const response = await axios.post('/login', inputData);
             console.log(response);
             if(typeof response.data === 'object') {
+                 // Assuming login is successful, update the login state
+                 isLogin();
                 alert('로그인에 성공했습니다.');
                 // Redirect to the '/test' page on the client side
                 navigate('/', { state: {user:response.data}});
@@ -84,7 +86,7 @@ function Login () {
         <ButtonWrapper>
             <button 
                 style={{width:"90px"}}
-                onClick={onLogin}
+                onClick={handleLogin}
             >로그인</button>
             <button 
                 style={{width:"90px"}}
