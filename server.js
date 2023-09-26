@@ -20,7 +20,7 @@ const MongoClient = require('mongodb').MongoClient;
 app.use(express.static(path.join(__dirname, 'react-project/build')));
 app.use(express.json());   
 
-//passport 라이브러리 설치 사용
+
 const LocalStrategy = require('passport-local').Strategy;
 app.use(session({
     secret: '비밀코드',
@@ -28,6 +28,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false } // Set to true in production with HTTPS
 }));
+
+//passport 라이브러리 설치 사용
 app.use(passport.initialize());
 app.use(passport.session()); 
 
@@ -88,9 +90,9 @@ done(null, user.id)
 
 //deserializeUser는 로그인한 유저의 세션아이디를 바탕으로 개인정보를 db에서 찾는 역할
 passport.deserializeUser(function (아이디, done) {
-db.collection('user').findOne({id: 아이디}, function(에러, 결과) {
-    done(null, 결과)
-})
+    db.collection('user').findOne({id: 아이디}, function(에러, 결과) {
+        done(null, 결과)
+    })
 });
 
 // 로그인 여부 체크
@@ -98,7 +100,12 @@ function isLogin(req, res,next) {
     if(req.isAuthenticated()) {
         next()
     } else {
-        res.send('로그인 하세요');
+        res.send('로그인 하세요')
+        // res.write("<script>alert('success')</script>");
+        // window.location.href= '/login';
+        // res.status(401).send('<script>window.location.href = "/login";</script>');
+        // res.send('<script type="text/javascript">alert("오류발생");</script>');
+        // res.redirect('/login');
     }
 }
 
@@ -197,7 +204,8 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/test', isLogin ,function(요청, 응답) {
-    console.log(요청.user)
+    
+    // 응답.render('Test.js',{ user: 요청.user});
     응답.json(요청.user);
     // db.collection('user').find({}).toArray(function(에러,result){
     //     // console.log('reslut');
@@ -220,7 +228,7 @@ app.post('/signup', function(req, res) {
                 })
             });
         } else {
-            res.send('중복된 아이디 입니다.')
+            res.send('중복된 아이디')
         }
     })
 })

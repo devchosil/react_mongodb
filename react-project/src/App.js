@@ -6,6 +6,8 @@ import Main from './pages/Main';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import Test from './pages/Test';
+import Board from './pages/Board';
+import Write from './pages/write';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,6 +25,8 @@ function App() {
             <Route path="/signup" element={<SignUp/>} />
             <Route path="/login" element={<Login isLogin={isLogin}/>} />
             <Route path="/test" element={<Test isLogout={isLogout} isLoggedIn={isLoggedIn}/>} />
+            <Route path="/board" element={<Board isLogout={isLogout} isLoggedIn={isLoggedIn}/>} />
+            <Route path="/write" element={<Write isLogout={isLogout} isLoggedIn={isLoggedIn}/>} />
           </Routes>
         </div>
     </BrowserRouter>

@@ -51,8 +51,12 @@ function SignUp () {
             await axios.post('/signup', formData)
             .then(response => {
                 console.log(response);
-                alert('성공');
-                navigate('/test')
+                if(response.data === '중복된 아이디') {
+                    alert('중복된 아이디입니다.');
+                } else {
+                    alert('성공');
+                    navigate('/')
+                }
             })
             .catch(error => {
                 console.log(error);

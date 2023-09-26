@@ -74,11 +74,10 @@ function Header ({ isLogout, isLoggedIn }) {
       console.log(response);
       isLogout();
       navigate('/login'); // Redirect to the home page after logout
-  } catch (error) {
-      console.error(error);
+    } catch (error) {
+        console.error(error);
+    }
   }
-
-}
 
   return(
    <HeaderContainer>
