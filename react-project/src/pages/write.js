@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import styled from 'styled-components';
 import { useLocation,useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Section = styled.section`
     display:flex;
@@ -21,8 +22,18 @@ function Write ({ isLogout, isLoggedIn }) {
         content:''
     })
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        
+        await axios.post('/write', input)
+            .then(result =>{
+                console.log(result);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        
     }
 
     const onChangeInput = (e) => {

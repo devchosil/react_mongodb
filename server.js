@@ -233,6 +233,27 @@ app.post('/signup', function(req, res) {
     })
 })
 
+app.post('/write', function(req, res) {
+    db.collection('postCounter').findOne({name:"count"}, function(에러, 결과){
+        const plusCount = 결과.totalCount + 1;
+
+        db.collection('postCounter').updateOne({name:"count"}, {$set: {totalCount: parseInt(plusCount)}})
+        
+        const postData = {
+            number : plusCount,
+            title: req.body.title,
+            content: req.body.content
+        } 
+        db.collection('post').insertOne(postData, function(에러, 결과){
+            res.send('글 등록 성공');
+        })
+        res.send('성공')
+
+    })
+
+})
+
+
 //리액트 라우터 쓰는 경우, 아래 코드를 최하단에 추가해놓는게 좋음
 app.get('*', function(요청,응답){
     응답.sendFile(path.join(__dirname, 'react-project/build/index.html'));
